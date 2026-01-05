@@ -2602,7 +2602,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    const PODCAST_SHEET_URL = 'https://raw.githubusercontent.com/reinasdev/efe-cast/refs/heads/main/podcast.csv';
+    const PODCAST_SHEET_URL = 'https://raw.githubusercontent.com/efe-dev1/efe-oceancore-podcast/refs/heads/main/podcast.csv';
 
     async function carregarPodcasts() {
         const container = document.getElementById('podcast-lista');
@@ -2665,5 +2665,6 @@ document.addEventListener('DOMContentLoaded', function () {
         iniciarPlayer();
     })();
 });
+
 
 
