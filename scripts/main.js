@@ -472,7 +472,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            const tituloRank = document.querySelector('.painel h3');
+            const tituloRank = document.querySelector('.rank-semanal h3');
 
             if (tituloRank) {
                 if (rankingAtual === 'professores') {
@@ -2665,6 +2665,3 @@ document.addEventListener('DOMContentLoaded', function () {
         iniciarPlayer();
     })();
 });
-
-
-
