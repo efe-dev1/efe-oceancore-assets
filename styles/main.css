@@ -2449,3 +2449,13 @@ input:checked + .slider:before {
     box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.25),
     0 0 6px rgba(0, 255, 255, 0.18);
 }
+
+.apenas-mobile {
+    display: none;
+}
+
+@media (max-width: 1024px) {
+    .apenas-mobile {
+        display: flex;
+    }
+}
