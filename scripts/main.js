@@ -853,7 +853,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function determinarCargosDisponiveis(cargo) {
         const cargoNormalizado = cargo.replace(/\(a\)$/i, '').trim().toLowerCase();
 
-        const cargosLideranca = ['graduador', 'estagiário', 'ministro', 'vice-líder', 'líder'];
+        const cargosLideranca = ['graduador', 'estagiário', 'ministro(a)', 'vice-líder', 'líder'];
 
         if (cargosLideranca.includes(cargoNormalizado)) {
             return ['professor', 'mentor', 'capacitador', 'graduador'];
@@ -1013,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     const cargoLower = cargo.toLowerCase();
                     if (nome && cargo && (cargoLower.includes('estagiário') ||
-                        cargoLower.includes('ministro') ||
+                        cargoLower.includes('ministro(a)') ||
                         cargoLower.includes('vice-líder') ||
                         cargoLower.includes('líder'))) {
 
@@ -1022,7 +1022,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             ordem = 1;
                         } else if (cargoLower.includes('vice-líder')) {
                             ordem = 2;
-                        } else if (cargoLower.includes('ministro')) {
+                        } else if (cargoLower.includes('ministro(a)')) {
                             ordem = 3;
                         } else if (cargoLower.includes('estagiário')) {
                             ordem = 4;
@@ -2665,3 +2665,4 @@ document.addEventListener('DOMContentLoaded', function () {
         iniciarPlayer();
     })();
 });
+
