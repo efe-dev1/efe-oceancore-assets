@@ -853,7 +853,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function determinarCargosDisponiveis(cargo) {
         const cargoNormalizado = cargo.replace(/\(a\)$/i, '').trim().toLowerCase();
 
-        const cargosLideranca = ['graduador', 'estagiário', 'ministro(a)', 'vice-líder', 'líder'];
+        const cargosLideranca = ['graduador', 'estagiário', 'ministro(a) da contabilidade', 'ministro(a) da administração', 'ministro(a) da documentação', 'ministro(a) da atualização', 'ministro(a) das finanças', 'ministro(a) da segurança', 'vice-líder', 'líder'];
 
         if (cargosLideranca.includes(cargoNormalizado)) {
             return ['professor', 'mentor', 'capacitador', 'graduador'];
@@ -2665,4 +2665,5 @@ document.addEventListener('DOMContentLoaded', function () {
         iniciarPlayer();
     })();
 });
+
 
