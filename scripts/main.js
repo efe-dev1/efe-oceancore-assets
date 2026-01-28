@@ -466,14 +466,14 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             let timerElement = document.getElementById('timer-rank');
             const rankContainer = document.getElementById('ranking-slides');
-    
+
             if (!rankContainer) {
                 console.error('Container do ranking não encontrado');
                 return;
             }
-    
+
             const tituloRank = document.querySelector('.rank-semanal h3');
-    
+
             if (tituloRank) {
                 if (rankingAtual === 'professores') {
                     tituloRank.innerHTML = 'RANK PROFESSOR <span class="timer-rank" id="timer-rank"></span>';
@@ -486,39 +486,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 timerElement = document.getElementById('timer-rank');
             }
-    
+
             rankContainer.innerHTML = '<div class="ranking-slide"><div class="linha-ranking"><span>Carregando<span class="loading-dots"></span></span></div></div>';
-    
+
             const config = RANKING_CONFIG[rankingAtual];
-            
-            let csvData;
-            try {
-                const response = await fetch('https://corsproxy.io/?' + encodeURIComponent(RANKING_URLS[rankingAtual]));
-                if (response.ok) {
-                    csvData = await response.text();
-                } else {
-                    throw new Error('Proxy 1 falhou');
-                }
-            } catch {
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(RANKING_URLS[rankingAtual])}`);
-                if (!response.ok) {
-                    throw new Error('Erro ao carregar CSV');
-                }
-                const data = await response.json();
-                csvData = data.contents;
+            const response = await fetch('https://corsproxy.io/?' + encodeURIComponent(RANKING_URLS[rankingAtual]));
+
+            if (!response.ok) {
+                throw new Error('Erro ao carregar CSV');
             }
-    
+
+            const csvData = await response.text();
             const linhas = csvData.split('\n');
             const dados = [];
-    
+
             linhas.forEach((linha, index) => {
                 if (index >= 5 && linha.trim()) {
                     const colunas = parseCSVComNicks(linha);
-    
+
                     if (colunas.length > Math.max(config.nickCol, config.pontosCol)) {
                         const nick = processarNick(colunas[config.nickCol]);
                         const pontos = colunas[config.pontosCol] ? parseInt(colunas[config.pontosCol].trim()) || 0 : 0;
-    
+
                         if (nick &&
                             nick !== '' &&
                             nick !== 'NICK' &&
@@ -530,7 +519,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             });
-    
+
             dados.sort((a, b) => b.pontos - a.pontos);
             dados.forEach((jogador, index) => {
                 const usuarioSalvo = localStorage.getItem('efe_usuario');
@@ -541,28 +530,28 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             });
-    
+
             rankContainer.innerHTML = '';
-    
+
             if (dados.length === 0) {
                 rankContainer.innerHTML = '<div class="ranking-slide"><div class="linha-ranking"><span>Nenhum dado encontrado</span></div></div>';
                 return;
             }
-    
+
             const grupos = [];
             for (let i = 0; i < dados.length; i += 5) {
                 grupos.push(dados.slice(i, i + 5));
             }
-    
+
             grupos.forEach((grupo, slideIndex) => {
                 const slide = document.createElement('div');
                 slide.className = 'ranking-slide';
-    
+
                 grupo.forEach((jogador, index) => {
                     const posicaoGlobal = slideIndex * 5 + index + 1;
                     const linha = document.createElement('div');
                     linha.className = 'linha-ranking';
-    
+
                     if (posicaoGlobal === 1) {
                         linha.style.background = 'linear-gradient(90deg, rgba(212,175,55,0.3) 0%, rgba(212,175,55,0.15) 100%)';
                         linha.style.color = '#ffd700';
@@ -573,7 +562,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         linha.style.background = 'linear-gradient(90deg, rgba(205,127,50,0.3) 0%, rgba(205,127,50,0.15) 100%)';
                         linha.style.color = '#cd7f32';
                     }
-    
+
                     if (rankingAtual === 'graduadores') {
                         linha.innerHTML = `<span>${String(posicaoGlobal).padStart(2, '0')} ${jogador.nick}</span><span>${jogador.pontos} total</span>`;
                     } else {
@@ -581,7 +570,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                     slide.appendChild(linha);
                 });
-    
+
                 while (slide.children.length < 5) {
                     const linhaVazia = document.createElement('div');
                     linhaVazia.className = 'linha-ranking';
@@ -589,18 +578,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     linhaVazia.innerHTML = `<span>--</span><span>--</span>`;
                     slide.appendChild(linhaVazia);
                 }
-    
+
                 rankContainer.appendChild(slide);
             });
-    
+
             totalSlides = grupos.length;
             atualizarNavegacaoRanking();
-    
+
             if (timerElement) {
                 const dataReset = calcularDataReset(rankingAtual);
                 atualizarTimerRank(dataReset);
             }
-    
+
         } catch (error) {
             console.error('Erro ao carregar ranking:', error);
             const rankContainer = document.getElementById('ranking-slides');
@@ -2676,6 +2665,4 @@ document.addEventListener('DOMContentLoaded', function () {
         iniciarPlayer();
     })();
 });
-
-
 
