@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // 🔒 LOGIN FORÇADO (DEV)
+    localStorage.setItem('efe_usuario', JSON.stringify({
+        nick: 'ReinaldoBaN',
+        loginTime: Date.now()
+    }));
     const icones = document.querySelectorAll('.icone');
     const secoes = document.querySelectorAll('.secao');
     const botaoAcessarAulas = document.getElementById('botao-acessar-aulas');
@@ -25,6 +30,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const textoSugestao = document.getElementById('texto-sugestao');
     const botaoSugestoesMobile = document.getElementById('botao-sugestoes-mobile');
     const botaoConfiguracoesMobile = document.getElementById('botao-configuracoes-mobile');
+
+    async function fetchSeguro(url, options = {}) {
+        return fetch(
+            'https://corsproxy.io/?' + encodeURIComponent(url),
+            options
+        );
+    }
 
     const RANKING_URLS = {
         professores: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRTAMYg28hPH_haWaWQRY7kM2s3gjkU58ps-u94fa-bjQb7C4qilJdjpqrCIFtdZYl3254FOXsW46b8/pub?gid=482045927&single=true&output=csv',
@@ -490,7 +502,7 @@ document.addEventListener('DOMContentLoaded', function () {
             rankContainer.innerHTML = '<div class="ranking-slide"><div class="linha-ranking"><span>Carregando<span class="loading-dots"></span></span></div></div>';
 
             const config = RANKING_CONFIG[rankingAtual];
-            const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(RANKING_URLS[rankingAtual]));
+            const response = await fetchSeguro(RANKING_URLS[rankingAtual]);
 
             if (!response.ok) {
                 throw new Error('Erro ao carregar CSV');
@@ -716,7 +728,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return 'lider';
             }
 
-            const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://docs.google.com/spreadsheets/d/e/2PACX-1vQu5x4PLj1LY_tzBUGaKZQmf6Y9L99B95v5Dl1kCcJnBAx9y5lfOp-n8X1LSMpdlXW9hZEPUKt397zE/pub?gid=0&single=true&output=csv'));
+            const response = await fetchSeguro('https://docs.google.com/spreadsheets/d/e/2PACX-1vQu5x4PLj1LY_tzBUGaKZQmf6Y9L99B95v5Dl1kCcJnBAx9y5lfOp-n8X1LSMpdlXW9hZEPUKt397zE/pub?gid=0&single=true&output=csv');
 
             if (!response.ok) throw new Error('Erro ao carregar CSV de cargos');
 
@@ -743,7 +755,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            const resDA = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://docs.google.com/spreadsheets/d/e/2PACX-1vSMJdPrmdSodMJYbJ9-7oIpUcE_P0Eh_EObOTZC2jcc7msIVHRqQ9Tq8C-8vLRhRYWMvXLi2cxKwMpP/pub?gid=593055626&single=true&output=csv'));
+            const resDA = await fetchSeguro('https://docs.google.com/spreadsheets/d/e/2PACX-1vSMJdPrmdSodMJYbJ9-7oIpUcE_P0Eh_EObOTZC2jcc7msIVHRqQ9Tq8C-8vLRhRYWMvXLi2cxKwMpP/pub?gid=593055626&single=true&output=csv');
 
             if (!resDA.ok) throw new Error('Erro ao carregar CSV do DA');
 
@@ -990,7 +1002,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!listaContatos) return;
 
-            const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://docs.google.com/spreadsheets/d/e/2PACX-1vQu5x4PLj1LY_tzBUGaKZQmf6Y9L99B95v5Dl1kCcJnBAx9y5lfOp-n8X1LSMpdlXW9hZEPUKt397zE/pub?gid=0&single=true&output=csv'));
+            const response = await fetchSeguro('https://docs.google.com/spreadsheets/d/e/2PACX-1vQu5x4PLj1LY_tzBUGaKZQmf6Y9L99B95v5Dl1kCcJnBAx9y5lfOp-n8X1LSMpdlXW9hZEPUKt397zE/pub?gid=0&single=true&output=csv');
 
             if (!response.ok) {
                 throw new Error('Erro ao carregar CSV');
@@ -1287,7 +1299,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function carregarScripts() {
         try {
-            const response = await fetch('https://api.github.com/gists/89c2a6a68477c33eca53aafd70b290de');
+            const response = await fetchSeguro('https://api.github.com/gists/89c2a6a68477c33eca53aafd70b290de');
             const gistData = await response.json();
             const scriptsContent = gistData.files['scripts.json'].content;
             scriptsData = JSON.parse(scriptsContent);
@@ -1825,7 +1837,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function carregarTemas() {
         try {
-            const response = await fetch('https://api.allorigins.win/raw?url=https://api.github.com/gists/f66c04b6e1046f24f7f5d5738b4c3b33');
+            const response = await fetchSeguro('https://api.github.com/gists/f66c04b6e1046f24f7f5d5738b4c3b33');
             const gistData = await response.json();
             const temas = JSON.parse(gistData.files['temas.json'].content);
 
@@ -2144,7 +2156,7 @@ document.addEventListener('DOMContentLoaded', function () {
     async function verificarStatusProfessor(nick) {
         try {
             const config = RANKING_CONFIG.professores;
-            const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(RANKING_URLS.professores));
+            const response = await fetchSeguro(RANKING_URLS.professores);
             if (!response.ok) throw new Error('Erro ao carregar CSV');
 
             const csvData = await response.text();
@@ -2175,7 +2187,7 @@ document.addEventListener('DOMContentLoaded', function () {
     async function verificarStatusMentor(nick) {
         try {
             const config = RANKING_CONFIG.mentores;
-            const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(RANKING_URLS.mentores));
+            const response = await fetchSeguro(RANKING_URLS.mentores);
             if (!response.ok) throw new Error('Erro ao carregar CSV');
 
             const csvData = await response.text();
@@ -2206,7 +2218,7 @@ document.addEventListener('DOMContentLoaded', function () {
     async function verificarStatusCapacitador(nick) {
         try {
             const config = RANKING_CONFIG.capacitadores;
-            const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(RANKING_URLS.capacitadores));
+            const response = await fetchSeguro(RANKING_URLS.capacitadores);
             if (!response.ok) throw new Error('Erro ao carregar CSV');
 
             const csvData = await response.text();
@@ -2237,7 +2249,7 @@ document.addEventListener('DOMContentLoaded', function () {
     async function verificarStatusGraduador(nick) {
         try {
             const config = RANKING_CONFIG.graduadores;
-            const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(RANKING_URLS.graduadores));
+            const response = await fetchSeguro(RANKING_URLS.graduadores);
             if (!response.ok) throw new Error('Erro ao carregar CSV');
 
             const csvData = await response.text();
@@ -2367,7 +2379,7 @@ document.addEventListener('DOMContentLoaded', function () {
             metaElement.innerHTML = '<span class="loading-dots"></span>';
 
             const config = RANKING_CONFIG[rankingAtual];
-            const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(RANKING_URLS[rankingAtual]));
+            const response = await fetchSeguro(RANKING_URLS[rankingAtual]);
 
             if (!response.ok) throw new Error('Erro ao carregar CSV');
 
