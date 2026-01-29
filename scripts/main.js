@@ -1,9 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // 🔒 LOGIN FORÇADO (DEV)
-    localStorage.setItem('efe_usuario', JSON.stringify({
-        nick: 'ReinaldoBaN',
-        loginTime: Date.now()
-    }));
     const icones = document.querySelectorAll('.icone');
     const secoes = document.querySelectorAll('.secao');
     const botaoAcessarAulas = document.getElementById('botao-acessar-aulas');
@@ -2677,3 +2672,4 @@ document.addEventListener('DOMContentLoaded', function () {
         iniciarPlayer();
     })();
 });
+
