@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // 🔒 LOGIN FORÇADO (DEV)
+    localStorage.setItem('efe_usuario', JSON.stringify({
+        nick: 'ReinaldoBaN',
+        loginTime: Date.now()
+    }));
     const icones = document.querySelectorAll('.icone');
     const secoes = document.querySelectorAll('.secao');
     const botaoAcessarAulas = document.getElementById('botao-acessar-aulas');
@@ -28,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function fetchSeguro(url, options = {}) {
         return fetch(
-            'https://corsproxy.io/?' + encodeURIComponent(url),
+            'https://efe-ocean.olordeban.workers.dev?url=' + encodeURIComponent(url),
             options
         );
     }
@@ -2672,4 +2677,3 @@ document.addEventListener('DOMContentLoaded', function () {
         iniciarPlayer();
     })();
 });
-
