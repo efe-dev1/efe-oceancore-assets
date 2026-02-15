@@ -732,14 +732,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             let usuarioEncontrado = false;
 
-            for (let i = 18; i < linhas.length; i++) {
+            for (let i = 19; i < linhas.length; i++) {
                 if (!linhas[i].trim()) continue;
 
                 const colunas = parseCSVComNicks(linhas[i]);
 
-                if (colunas.length >= 3) {
+                if (colunas.length >= 4) {
                     const nick = processarNick(colunas[2]);
-                    const cargoCompleto = processarNick(colunas[1]);
+                    const cargoCompleto = processarNick(colunas[3]);
 
                     const cargoNormalizado = cargoCompleto.replace(/\(a\)$/i, '').trim().toLowerCase();
 
@@ -2672,4 +2672,5 @@ document.addEventListener('DOMContentLoaded', function () {
         iniciarPlayer();
     })();
 });
+
 
