@@ -732,7 +732,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             let usuarioEncontrado = false;
 
-            for (let i = 20; i < linhas.length; i++) {
+            for (let i = 19; i < linhas.length; i++) {
                 if (!linhas[i].trim()) continue;
 
                 const colunas = parseCSVComNicks(linhas[i]);
@@ -2672,6 +2672,7 @@ document.addEventListener('DOMContentLoaded', function () {
         iniciarPlayer();
     })();
 });
+
 
 
 
