@@ -738,8 +738,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const colunas = parseCSVComNicks(linhas[i]);
 
                 if (colunas.length >= 4) {
-                    const nick = processarNick(colunas[2]);
-                    const cargoCompleto = processarNick(colunas[3]);
+                    const nick = processarNick(colunas[3]);
+                    const cargoCompleto = processarNick(colunas[2]);
 
                     const cargoNormalizado = cargoCompleto.replace(/\(a\)$/i, '').trim().toLowerCase();
 
@@ -2672,6 +2672,7 @@ document.addEventListener('DOMContentLoaded', function () {
         iniciarPlayer();
     })();
 });
+
 
 
 
