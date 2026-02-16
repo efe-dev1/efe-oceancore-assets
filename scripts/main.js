@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function fetchSeguro(url, options = {}) {
         return fetch(
-            'https://efe-ocean.olordeban.workers.dev?url=' + encodeURIComponent(url),
+            'https://proxy.reinasdev.workers.dev?url=' + encodeURIComponent(url),
             options
         );
     }
@@ -2672,6 +2672,7 @@ document.addEventListener('DOMContentLoaded', function () {
         iniciarPlayer();
     })();
 });
+
 
 
 
