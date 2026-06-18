@@ -51,7 +51,7 @@
         }
 
         [data-theme="deepocean"] body {
-            background-image: url('https://i.imgur.com/WRYMEw8.png');
+            background-image: url('https://i.imgur.com/GF4v3c0.png');
             background-repeat: repeat;
             background-size: auto;
         }
@@ -140,23 +140,15 @@
         }
 
         [data-theme="harrypotter"] {
-            /* Madeira escura de Hogwarts + pedra + pergaminho */
             --bg: #1a1208;
             --surface: #211a0d;
             --surface2: #2a2010;
             --surface3: #342814;
-
-            /* Borda em tom de madeira / ouro envelhecido */
             --border: #4a3718;
-
-            /* Accent: âmbar mágico / chama de vela */
             --accent: #d4922a;
             --accent2: #bf7e1e;
-
             --accent-dim: rgba(212, 146, 42, .12);
             --accent-glow: rgba(212, 146, 42, .26);
-
-            /* Texto em pergaminho envelhecido */
             --text: #f0e6cc;
             --text2: #c4a96e;
             --text3: #7a5e35;
@@ -219,7 +211,7 @@
         body {
             background: var(--bg);
             transition: background var(--transition), color var(--transition);
-            background-image: url('https://i.imgur.com/6DTYdbO.png');
+            background-image: url('https://i.imgur.com/aUA3rDn.png');
             background-repeat: repeat;
             background-size: auto;
         }
