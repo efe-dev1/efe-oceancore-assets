@@ -360,14 +360,43 @@ document.addEventListener('DOMContentLoaded', function () {
                 return null;
             }
 
+            // ─────────────────────────────────────────────────────────────────
+            // ALTERAÇÃO 1: verificarGruposEspeciais agora retorna o cargo
+            // correspondente ao grupo de maior hierarquia encontrado no perfil,
+            // ou null se o nick não pertencer a nenhum grupo especial.
+            //
+            // Hierarquia (do mais alto para o mais baixo):
+            //   PMJ  — [RCC] Procuradoria Militar  (nível 1 — cargo PMJ)
+            //   COR  — [RCC] Corregedoria          (nível 2 — cargo COR)
+            //   SI   — [RCC] G.A.T.E               (nível 3 — cargo SI)
+            //
+            // Regra: se o membro tiver grupos de nível inferior junto com
+            // grupos de nível superior, prevalece o cargo do nível SUPERIOR
+            // (menor número). Ou seja:
+            //   • tem PMJ (qualquer combinação) → cargo PMJ
+            //   • tem COR mas não PMJ           → cargo COR
+            //   • tem só G.A.T.E                → cargo SI
+            // ─────────────────────────────────────────────────────────────────
             async function verificarGruposEspeciais(nick) {
                 try {
                     const r = await fetch(`https://www.habbo.com.br/api/public/users?name=${encodeURIComponent(nick)}`);
-                    if (!r.ok) return false;
+                    if (!r.ok) return null;
                     const d = await r.json();
-                    const gs = ['[RCC] Corregedoria', '[RCC] G.A.T.E', '[RCC] G.S.S', '[RCC] Procuradoria Militar'];
-                    return (d.groups || []).some(g => gs.includes(g.name));
-                } catch { return false; }
+                    const grupos = (d.groups || []).map(g => g.name);
+
+                    const temPMJ  = grupos.includes('[RCC] Procuradoria Militar'); // nível 1
+                    const temCOR  = grupos.includes('[RCC] Corregedoria');         // nível 2
+                    const temGATE = grupos.includes('[RCC] G.A.T.E');              // nível 3
+
+                    // Nível 1 prevalece sobre tudo
+                    if (temPMJ) return 'pmj';
+                    // Nível 2 prevalece sobre nível 3
+                    if (temCOR) return 'cor';
+                    // Nível 3 somente se não tiver nenhum superior
+                    if (temGATE) return 'si';
+
+                    return null; // nenhum grupo especial
+                } catch { return null; }
             }
 
             async function detectarCargoUsuario() {
@@ -375,7 +404,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     const us = localStorage.getItem('efe_usuario');
                     if (!us) return null;
                     const nick = JSON.parse(us).nick;
-                    if (await verificarGruposEspeciais(nick)) return 'estagiário';
+
+                    // ALTERAÇÃO 2: consumir o cargo retornado (string) em vez de boolean
+                    const grupoEspecial = await verificarGruposEspeciais(nick);
+                    if (grupoEspecial) return grupoEspecial;
+
                     const r = await fetch('https://proxy.reinasdev.workers.dev?url=' + encodeURIComponent('https://docs.google.com/spreadsheets/d/e/2PACX-1vQu5x4PLj1LY_tzBUGaKZQmf6Y9L99B95v5Dl1kCcJnBAx9y5lfOp-n8X1LSMpdlXW9hZEPUKt397zE/pub?gid=0&single=true&output=csv'));
                     if (!r.ok) throw new Error();
                     const csv = await r.text();
@@ -410,7 +443,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
             function determinarCargosDisponiveis(cargo) {
                 const c = cargo.replace(/\(a\)$/i, '').trim().toLowerCase();
-                const lideres = ['estagiário', 'graduador', 'ministro(a) da contabilidade', 'ministro(a) da administração', 'ministro(a) da documentação', 'ministro(a) da atualização', 'ministro(a) das finanças', 'ministro(a) da segurança', 'vice-líder', 'líder', 'lider'];
+                // ALTERAÇÃO 3: pmj, cor e si adicionados como cargos com acesso de líder
+                const lideres = [
+                    'pmj', 'cor', 'si',
+                    'estagiário', 'graduador',
+                    'ministro(a) da contabilidade', 'ministro(a) da administração',
+                    'ministro(a) da documentação', 'ministro(a) da atualização',
+                    'ministro(a) das finanças', 'ministro(a) da segurança',
+                    'vice-líder', 'líder', 'lider'
+                ];
                 if (lideres.includes(c)) return ['professor', 'mentor', 'graduador'];
                 if (c === 'graduador') return ['professor', 'mentor', 'graduador'];
                 if (c === 'mentor') return ['professor', 'mentor'];
@@ -899,6 +940,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     graduador: 'https://docs.google.com/spreadsheets/d/1TWbKL2P0kk8wIrR0uDxDk47ZYOKOlkCDakFkKD-ruHA/edit?gid=1053708693#gid=1053708693'
                 };
                 const aulaAtual = aulaAtualAberta || '';
+                // ALTERAÇÃO 4: AvCE adicionado à lista de aulas com botão System
                 const aulasSystem = ['APB', 'API', 'APA', 'AFP', 'AFO', 'AvCE'];
                 let html = `<div class="postagem-section"><div class="postagem-section-title">Relatório de Função</div><div class="postagem-btns"><button class="btn-post" onclick="abrirModalRelatorio('${cargo}','${aulaAtual}')"><i class="ph ph-clipboard-text"></i><span class="btn-post-label">Relatório</span><span class="btn-post-desc">Registre sua função</span></button><a class="btn-post" href="${relLinks[cargo] || '#'}" target="_blank"><i class="ph ph-eye"></i><span class="btn-post-label">Conferir</span><span class="btn-post-desc">Ver relatório</span></a>`;
                 if (cargo === 'professor' && aulasSystem.includes(aulaAtual)) {
