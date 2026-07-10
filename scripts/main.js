@@ -359,44 +359,37 @@ document.addEventListener('DOMContentLoaded', function () {
                 } catch (err) { console.error('Erro ao pegar username:', err); }
                 return null;
             }
-
-            // ─────────────────────────────────────────────────────────────────
-            // ALTERAÇÃO 1: verificarGruposEspeciais agora retorna o cargo
-            // correspondente ao grupo de maior hierarquia encontrado no perfil,
-            // ou null se o nick não pertencer a nenhum grupo especial.
-            //
-            // Hierarquia (do mais alto para o mais baixo):
-            //   PMJ  — [RCC] Procuradoria Militar  (nível 1 — cargo PMJ)
-            //   COR  — [RCC] Corregedoria          (nível 2 — cargo COR)
-            //   SI   — [RCC] G.A.T.E               (nível 3 — cargo SI)
-            //
-            // Regra: se o membro tiver grupos de nível inferior junto com
-            // grupos de nível superior, prevalece o cargo do nível SUPERIOR
-            // (menor número). Ou seja:
-            //   • tem PMJ (qualquer combinação) → cargo PMJ
-            //   • tem COR mas não PMJ           → cargo COR
-            //   • tem só G.A.T.E                → cargo SI
-            // ─────────────────────────────────────────────────────────────────
             async function verificarGruposEspeciais(nick) {
                 try {
                     const r = await fetch(`https://www.habbo.com.br/api/public/users?name=${encodeURIComponent(nick)}`);
                     if (!r.ok) return null;
                     const d = await r.json();
-                    const grupos = (d.groups || []).map(g => g.name);
+                    if (!d.uniqueId) return null;
 
-                    const temPMJ  = grupos.includes('[RCC] Procuradoria Militar'); // nível 1
-                    const temCOR  = grupos.includes('[RCC] Corregedoria');         // nível 2
-                    const temGATE = grupos.includes('[RCC] G.A.T.E');              // nível 3
+                    const rp = await fetch(`https://www.habbo.com.br/api/public/users/${d.uniqueId}/profile`);
+                    if (!rp.ok) return null;
+                    const dp = await rp.json();
 
-                    // Nível 1 prevalece sobre tudo
+                    if (!dp.profileVisible) {
+                        console.warn(`Perfil de ${nick} está privado, não é possível checar grupos.`);
+                        return null;
+                    }
+
+                    const grupos = (dp.groups || []).map(g => g.name);
+
+                    const temPMJ  = grupos.includes('[RCC] Procuradoria Militar');
+                    const temCOR  = grupos.includes('[RCC] Corregedoria');
+                    const temGATE = grupos.includes('[RCC] G.A.T.E');
+
                     if (temPMJ) return 'pmj';
-                    // Nível 2 prevalece sobre nível 3
                     if (temCOR) return 'cor';
-                    // Nível 3 somente se não tiver nenhum superior
                     if (temGATE) return 'si';
 
-                    return null; // nenhum grupo especial
-                } catch { return null; }
+                    return null;
+                } catch (e) {
+                    console.error('Erro ao verificar grupos especiais:', e);
+                    return null;
+                }
             }
 
             async function detectarCargoUsuario() {
@@ -404,8 +397,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     const us = localStorage.getItem('efe_usuario');
                     if (!us) return null;
                     const nick = JSON.parse(us).nick;
-
-                    // ALTERAÇÃO 2: consumir o cargo retornado (string) em vez de boolean
                     const grupoEspecial = await verificarGruposEspeciais(nick);
                     if (grupoEspecial) return grupoEspecial;
 
@@ -443,18 +434,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             function determinarCargosDisponiveis(cargo) {
                 const c = cargo.replace(/\(a\)$/i, '').trim().toLowerCase();
-                // ALTERAÇÃO 3: pmj, cor e si adicionados como cargos com acesso de líder
                 const lideres = [
                     'pmj', 'cor', 'si',
-                    'estagiário', 'graduador',
+                    'estagiário(a)', 'graduador(a)',
                     'ministro(a) da contabilidade', 'ministro(a) da administração',
                     'ministro(a) da documentação', 'ministro(a) da atualização',
                     'ministro(a) das finanças', 'ministro(a) da segurança',
                     'vice-líder', 'líder', 'lider'
                 ];
-                if (lideres.includes(c)) return ['professor', 'mentor', 'graduador'];
-                if (c === 'graduador') return ['professor', 'mentor', 'graduador'];
-                if (c === 'mentor') return ['professor', 'mentor'];
+                if (lideres.includes(c)) return ['professor(a)', 'mentor(a)', 'graduador(a)'];
+                if (c === 'graduador(a)') return ['professor(a)', 'mentor(a)', 'graduador(a)'];
+                if (c === 'mentor') return ['professor(a)', 'mentor(a)'];
                 return ['professor'];
             }
 
