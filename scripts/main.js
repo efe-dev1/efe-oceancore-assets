@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-
             const GS_API_KEY = 'AIzaSyCpy7bGVYkINBv0TyCOGz8uzn2mzS2r7UQ';
             const SS_MAIN = '1RjTU4PSmYAqPPQQdtT3A2ngIfHiont6F1QmYH8ZqIAY';
             const SS_PROF_RANK = '1f9fPMnAosjKEvyZ5LJtuAz-kmdn1-VXRA9Nawr2tR3k';
@@ -370,16 +369,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (!rp.ok) return null;
                     const dp = await rp.json();
 
-                    if (!dp.profileVisible) {
-                        console.warn(`Perfil de ${nick} está privado, não é possível checar grupos.`);
-                        return null;
-                    }
+                    console.log('Perfil de:', nick, dp);
 
                     const grupos = (dp.groups || []).map(g => g.name);
 
                     const temPMJ  = grupos.includes('[RCC] Procuradoria Militar');
                     const temCOR  = grupos.includes('[RCC] Corregedoria');
-                    const temGATE = grupos.includes('[RCC] G.A.T.E');
+                    const temGATE = grupos.includes('[RCC] G.A.T.E.');
 
                     if (temPMJ) return 'pmj';
                     if (temCOR) return 'cor';
