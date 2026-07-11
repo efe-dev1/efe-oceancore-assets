@@ -373,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     const grupos = (dp.groups || []).map(g => g.name);
 
-                    const temPMJ  = grupos.includes('[RCC] Procuradoria Militar');
+                    const temPMJ  = grupos.includes('[RCC] Procuradoria Militar de Justiça');
                     const temCOR  = grupos.includes('[RCC] Corregedoria');
                     const temGATE = grupos.includes('[RCC] G.A.T.E.');
 
