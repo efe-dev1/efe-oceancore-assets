@@ -429,18 +429,18 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             function determinarCargosDisponiveis(cargo) {
-                const c = cargo.replace(/\(a\)$/i, '').trim().toLowerCase();
+                const c = cargo.replace(/\(a\)/gi, '').trim().toLowerCase();
                 const lideres = [
                     'pmj', 'cor', 'si',
-                    'estagiário(a)', 'graduador(a)',
-                    'ministro(a) da contabilidade', 'ministro(a) da administração',
-                    'ministro(a) da documentação', 'ministro(a) da atualização',
-                    'ministro(a) das finanças', 'ministro(a) da segurança',
+                    'estagiário', 'graduador',
+                    'ministro da contabilidade', 'ministro da administração',
+                    'ministro da documentação', 'ministro da atualização',
+                    'ministro das finanças', 'ministro da segurança',
                     'vice-líder', 'líder', 'lider'
                 ];
-                if (lideres.includes(c)) return ['professor(a)', 'mentor(a)', 'graduador(a)'];
-                if (c === 'graduador(a)') return ['professor(a)', 'mentor(a)', 'graduador(a)'];
-                if (c === 'mentor') return ['professor(a)', 'mentor(a)'];
+                if (lideres.includes(c)) return ['professor', 'mentor', 'graduador'];
+                if (c === 'graduador') return ['professor', 'mentor', 'graduador'];
+                if (c === 'mentor') return ['professor', 'mentor'];
                 return ['professor'];
             }
 
